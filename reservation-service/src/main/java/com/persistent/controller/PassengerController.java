@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.persistent.dao.Availability;
@@ -22,7 +21,10 @@ import com.persistent.dto.SearchTrainDto;
 import com.persistent.dto.StatusDto;
 import com.persistent.service.RegistrationService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
+@Slf4j
 public class PassengerController {
 
 	@Autowired
@@ -30,50 +32,56 @@ public class PassengerController {
 
 	@PostMapping("passeger/registration")
 	public ResponseEntity<PassengerDto> addPassengerDetails(@RequestBody PassengerDto passenger) {
+		log.info("addPassengerDetails() excecution - started");
 		return ResponseEntity.ok(service.addPassengerDetails(passenger));
 	}
 
 	@PostMapping("update/profile")
 	public ResponseEntity<PassengerDto> updatePassengerDetails(@RequestBody PassengerDto passenger) {
+		log.info("updatePassengerDetails() excecution - started");
 		return ResponseEntity.ok(service.addPassengerDetails(passenger));
 	}
-	
+
 	@PostMapping("add/availability")
 	public ResponseEntity<StatusDto> addAvailability(@RequestBody AvailabilityDto reqDto) {
+		log.info("addAvailability() excecution - started");
 		return ResponseEntity.ok(service.addAvailability(reqDto));
 	}
 
 	@GetMapping("passeger/{mobileNumber}")
 	public ResponseEntity<PassengerDto> getPassengerDetails(@PathVariable String mobileNumber) {
+		log.info("getPassengerDetails() excecution - started");
 		return ResponseEntity.ok(service.getPassengerDetails(mobileNumber));
 	}
 
 	@PostMapping("searchTrain")
 	public ResponseEntity<List<TrainInfo>> searchTrain(@RequestBody SearchTrainDto reqDto) {
+		log.info("searchTrain() excecution - started");
 		return ResponseEntity.ok(service.searchTrain(reqDto));
 	}
 
 	@PostMapping("ticket/availability")
-	public ResponseEntity<List<Availability> > ticketAvailability(@RequestBody AvailabilityDto reqDto) {
+	public ResponseEntity<List<Availability>> ticketAvailability(@RequestBody AvailabilityDto reqDto) {
+		log.info("ticketAvailability() excecution - started");
 		return ResponseEntity.ok(service.ticketAvailability(reqDto));
 	}
 
 	@PostMapping("book/ticket")
 	public ResponseEntity<Ticket> bookTicket(@RequestBody BookTicketDto reqDto) {
+		log.info("bookTicket() excecution - started");
 		return ResponseEntity.ok(service.bookTicket(reqDto));
 	}
 
 	@PostMapping("cancel/ticket")
 	public ResponseEntity<StatusDto> cancelTicket(@RequestBody CancelTicketDto reqDto) {
+		log.info("cancelTicket() excecution - started");
 		return ResponseEntity.ok(service.cancelTicket(reqDto));
 	}
 
 	@PostMapping("add/train")
 	public ResponseEntity<TrainInfo> addTrainDetails(@RequestBody TrainInfo train) {
+		log.info("addTrainDetails() excecution - started");
 		return ResponseEntity.ok(service.addTrainDetails(train));
 	}
 
 }
-// bookTicket makePayment cancelTicket
-
-//updateSchedule modifyTicketCount

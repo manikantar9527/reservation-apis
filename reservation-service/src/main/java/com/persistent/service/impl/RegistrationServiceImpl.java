@@ -57,19 +57,21 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 	public PassengerDto addPassengerDetails(PassengerDto reqDto) {
-		log.info("input request details" + reqDto);
+		log.info("addPassengerDetails request details" + reqDto);
 		if (reqDto.getUserId() != null) {
 			if (passengerRepository.findByUserIdOrContactNumber(reqDto.getUserId(),reqDto.getContactNumber()) == null) {
+				log.info(AppConstants.INVALID_MOBILENUMBER);
 				throw new ReservationException(AppConstants.INVALID_MOBILENUMBER, HttpStatus.BAD_REQUEST,
 						Severity.INFO);
 			}
 		}
-		if(passengerRepository.findByContactNumber(reqDto.getContactNumber()) != null)
+		if(passengerRepository.findByContactNumber(reqDto.getContactNumber()) != null) {
+			log.info(AppConstants.USER_ALREADY_REGISTERED);
 			throw new ReservationException(AppConstants.USER_ALREADY_REGISTERED, HttpStatus.BAD_REQUEST,
 					Severity.INFO);
+		}
 		
 		passengerRepository.save(modelMapper.map(reqDto, Passenger.class));
-		log.info("");
 		return reqDto;
 	}
 
@@ -77,6 +79,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 	public PassengerDto getPassengerDetails(String ContactNumber) {
 		Passenger passenger = passengerRepository.findByContactNumber(ContactNumber);
 		if (passenger == null) {
+			log.info(AppConstants.INVALID_MOBILENUMBER);
 			throw new ReservationException(AppConstants.INVALID_MOBILENUMBER, HttpStatus.BAD_REQUEST, Severity.INFO);
 		}
 
@@ -169,10 +172,12 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 	public StatusDto cancelTicket(CancelTicketDto reqDto) {
+		log.info("cancelTicket request details" + reqDto);
 		Passenger passenger = passengerRepository.findByContactNumber(reqDto.getContactNumber());
 		Ticket ticket = ticketRepository.findByPassengerUserIdAndTicketIdAndStatus(passenger.getUserId(),
 				reqDto.getTicketId(), 0);
 		if (ticket == null) {
+			log.info(AppConstants.INVALID_TICKET_DETAILS);
 			return new StatusDto(1, AppConstants.INVALID_TICKET_DETAILS);
 		}
 		ticket.setStatus(1);
@@ -185,6 +190,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 			availability.setNoOfUpperSeatsAvailable(availability.getNoOfUpperSeatsAvailable() + 1);
 
 		availabilityRepository.save(availability);
+		log.info(AppConstants.TICKET_CANCELLED_SUCCESSFULLY);
 		return new StatusDto(1, AppConstants.TICKET_CANCELLED_SUCCESSFULLY);
 	}
 
@@ -195,7 +201,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 	public StatusDto addAvailability(AvailabilityDto reqDto) {
-
+		log.info("addAvailability request details" + reqDto);
 		List<Availability> availabilities = availabilityRepository.findByTrainTrainIdAndDate(reqDto.getTrainId(),
 				reqDto.getDate());
 		TrainInfo trainInfo = trainInfoRepository.findByTrainId(reqDto.getTrainId());
@@ -205,8 +211,10 @@ public class RegistrationServiceImpl implements RegistrationService {
 				availabilityRepository.save(new Availability(null, reqDto.getDate(), trainInfo, new Date(),
 						seatsPerCoach / 2, seatsPerCoach / 2, "c" + i));
 			}
+			log.info(AppConstants.AVAILABILITY_DETAILS_ADDED);
 			return new StatusDto(0, AppConstants.AVAILABILITY_DETAILS_ADDED);
 		}
+		log.info(AppConstants.AVAILABILITY_DETAILS_ALREADY_EXIST);
 		return new StatusDto(1, AppConstants.AVAILABILITY_DETAILS_ALREADY_EXIST);
 	}
 

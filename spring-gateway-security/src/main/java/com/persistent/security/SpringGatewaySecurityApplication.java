@@ -1,7 +1,5 @@
 package com.persistent.security;
 
-import static java.time.Duration.ofSeconds;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,8 +9,6 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
-import org.springframework.cloud.client.circuitbreaker.Customizer;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
@@ -37,12 +33,14 @@ public class SpringGatewaySecurityApplication {
 
 	
 	
-	  @Bean public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-	  return builder.routes().route(AppConstants.RESERVATION_SERVICE_KEY, r ->
-	  r.path("/api/reservation-service/**").filters(f ->
-	  f.stripPrefix(2)).uri("http://localhost:7071"))
-	  .route(AppConstants.BOOK_TICKET_SERVICE_KEY, r -> r.path("/api/course-service/**")
-	  .filters(f -> f.stripPrefix(2)).uri("http://localhost:7072")) .build(); }
+	@Bean
+	public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+		return builder.routes().route(AppConstants.RESERVATION_SERVICE_KEY,
+				r -> r.path("/api/reservation-service/**").filters(f -> f.stripPrefix(2)).uri("http://localhost:7071"))
+				.route(AppConstants.BOOK_TICKET_SERVICE_KEY,
+						r -> r.path("/api/book-ticket/**").filters(f -> f.stripPrefix(2)).uri("http://localhost:7072"))
+				.build();
+	}
 	 
 	/*
 	 * @Bean public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
