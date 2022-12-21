@@ -10,4 +10,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
 	Ticket findByPassengerUserIdAndTicketIdAndStatus(Long userId, Long ticketId, int i);
 
+	Ticket findByPassengerContactNumberAndTicketIdAndStatus(String contactNumber, Long ticketId, int i);
+
 }

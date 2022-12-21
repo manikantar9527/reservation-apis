@@ -5,7 +5,7 @@ public class AppConstants {
 	public static final String UPPER = "upper";
 	public static final String FEMALE = "female";
 	public static final String USER_ALREADY_REGISTERED = "user already registered";
-	public static final String INVALID_DETAILS = "user already registered";
+	public static final String INVALID_DETAILS = "Invalid Details";
 	public static final String INVALID_MOBILENUMBER = "invalid mobileNumber";
 	public static final String SEATS_AVAILABLE = "seates available";
 	public static final String SEATS_NOT_AVAILABLE = "seates not available";

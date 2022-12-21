@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.persistent.config.AppConstants;
 import com.persistent.dao.Availability;
-import com.persistent.dao.Passenger;
 import com.persistent.dao.Ticket;
 import com.persistent.dao.TrainInfo;
 import com.persistent.dto.CancelTicketDto;
@@ -17,7 +16,6 @@ import com.persistent.dto.StatusDto;
 import com.persistent.exception.ReservationException;
 import com.persistent.exception.Severity;
 import com.persistent.repository.AvailabilityRepository;
-import com.persistent.repository.PassengerRepository;
 import com.persistent.repository.TicketRepository;
 import com.persistent.repository.TrainInfoRepository;
 import com.persistent.service.TrainInfoService;
@@ -27,9 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class TrainInfoServiceImpl implements TrainInfoService {
-
-	@Autowired
-	private PassengerRepository passengerRepository;
 
 	@Autowired
 	private AvailabilityRepository availabilityRepository;
@@ -55,12 +50,7 @@ public class TrainInfoServiceImpl implements TrainInfoService {
 	public StatusDto cancelTicket(CancelTicketDto reqDto) {
 		try {
 			log.info("cancelTicket request details" + reqDto);
-			Passenger passenger = passengerRepository.findByContactNumber(reqDto.getContactNumber());
-			if (passenger == null) {
-				log.info(AppConstants.INVALID_MOBILENUMBER);
-				return new StatusDto(1, AppConstants.INVALID_MOBILENUMBER);
-			}
-			Ticket ticket = ticketRepository.findByPassengerUserIdAndTicketIdAndStatus(passenger.getUserId(),
+			Ticket ticket = ticketRepository.findByPassengerContactNumberAndTicketIdAndStatus(reqDto.getContactNumber(),
 					reqDto.getTicketId(), 0);
 			if (ticket == null) {
 				log.info(AppConstants.INVALID_TICKET_DETAILS);
