@@ -20,7 +20,7 @@ public class PassengerDto {
 	private String gender;
 	private Integer age;
 	private String address;
-	@JsonIgnore
+	//@JsonIgnore
 	private String password;
 	private Date createdOn;
 }
