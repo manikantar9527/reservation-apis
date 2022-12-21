@@ -16,7 +16,7 @@ public class PassengerDto {
 	private Long userId;
 	private String name;
 	private String contactNumber;
-	private String email;
+	private String emailId;
 	private String gender;
 	private Integer age;
 	private String address;
