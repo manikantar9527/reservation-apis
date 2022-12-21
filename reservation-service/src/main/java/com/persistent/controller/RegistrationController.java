@@ -1,5 +1,7 @@
 package com.persistent.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,13 +23,13 @@ public class RegistrationController {
 	private RegistrationService service;
 
 	@PostMapping("passeger/registration")
-	public ResponseEntity<PassengerDto> addPassengerDetails(@RequestBody PassengerDto passenger) {
+	public ResponseEntity<PassengerDto> addPassengerDetails(@Valid @RequestBody PassengerDto passenger) {
 		log.info("addPassengerDetails() excecution - started");
 		return ResponseEntity.ok(service.addPassengerDetails(passenger));
 	}
 
 	@PostMapping("update/profile")
-	public ResponseEntity<PassengerDto> updatePassengerDetails(@RequestBody PassengerDto passenger) {
+	public ResponseEntity<PassengerDto> updatePassengerDetails(@Valid @RequestBody PassengerDto passenger) {
 		log.info("updatePassengerDetails() excecution - started");
 		return ResponseEntity.ok(service.addPassengerDetails(passenger));
 	}

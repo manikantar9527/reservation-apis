@@ -2,6 +2,8 @@ package com.persistent.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,13 +25,13 @@ public class AvailabilityController {
 	private AvailabilityService service;
 
 	@PostMapping("add/availability")
-	public ResponseEntity<StatusDto> addAvailability(@RequestBody AvailabilityDto reqDto) {
+	public ResponseEntity<StatusDto> addAvailability(@Valid @RequestBody AvailabilityDto reqDto) {
 		log.info("addAvailability() excecution - started");
 		return ResponseEntity.ok(service.addAvailability(reqDto));
 	}
 
 	@PostMapping("ticket/availability")
-	public ResponseEntity<List<Availability>> ticketAvailability(@RequestBody AvailabilityDto reqDto) {
+	public ResponseEntity<List<Availability>> ticketAvailability(@Valid @RequestBody AvailabilityDto reqDto) {
 		log.info("ticketAvailability() excecution - started");
 		return ResponseEntity.ok(service.ticketAvailability(reqDto));
 	}

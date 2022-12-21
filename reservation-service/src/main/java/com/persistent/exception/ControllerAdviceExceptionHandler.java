@@ -1,44 +1,45 @@
 package com.persistent.exception;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
-
-import lombok.Builder;
-import lombok.Data;
 
 @ControllerAdvice
 public class ControllerAdviceExceptionHandler {
 
-	@ResponseStatus(HttpStatus.FORBIDDEN)
 	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorMessage> handleForbiddenAccessException(Exception exception, HttpStatus status) {
-		List<String> details = new ArrayList<>();
-		details.add(exception.getLocalizedMessage());
+	public ResponseEntity<Object> handleAllExceptionMethod(Exception ex, WebRequest requset) {
 
-		ErrorMessage errorMessage = ErrorMessage.builder().httpStatus(status).errorDetails(details).build();
+		ExceptionMessage exceptionMessageObj = new ExceptionMessage();
 
-		return ResponseEntity.status(status).body(errorMessage);
-	}
+		// Handle All Field Validation Errors
+		if (ex instanceof MethodArgumentNotValidException) {
+			StringBuilder sb = new StringBuilder();
+			List<FieldError> fieldErrors = ((MethodArgumentNotValidException) ex).getBindingResult().getFieldErrors();
+			for (FieldError fieldError : fieldErrors) {
+				sb.append(fieldError.getDefaultMessage());
+				sb.append(";");
+			}
+			exceptionMessageObj.setMessage(sb.toString());
+		} else {
+			exceptionMessageObj.setMessage(ex.getLocalizedMessage());
+		}
 
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ErrorMessage> handleUserBadRequestException(HttpStatus status, WebRequest request) {
-		List<String> details = new ArrayList<>();
-		details.add(request.getContextPath());
+		exceptionMessageObj.setError(ex.getClass().getCanonicalName());
+		exceptionMessageObj.setPath(((ServletWebRequest) requset).getRequest().getServletPath());
 
-		ErrorMessage errorMessage = ErrorMessage.builder().httpStatus(status).errorDetails(details).build();
-
-		return ResponseEntity.status(status).body(errorMessage);
+		// return exceptionMessageObj;
+		return new ResponseEntity<>(exceptionMessageObj, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(ReservationException.class)
@@ -46,13 +47,5 @@ public class ControllerAdviceExceptionHandler {
 		ErrorDto errorMessage = ErrorDto.builder().id(UUID.randomUUID()).severity(e.getSeverity())
 				.message(e.getMessage()).currentTime(OffsetDateTime.now()).build();
 		return ResponseEntity.status(e.getStatus()).body(errorMessage);
-	}
-
-	@Data
-	@Builder
-	private static class ErrorMessage {
-		private final String message;
-		private final HttpStatus httpStatus;
-		private final List<String> errorDetails;
 	}
 }
