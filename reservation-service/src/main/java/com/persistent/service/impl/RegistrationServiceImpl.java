@@ -27,22 +27,27 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 	@Override
 	public PassengerDto addPassengerDetails(PassengerDto reqDto) {
-		log.info("addPassengerDetails request details" + reqDto);
-		if (reqDto.getUserId() != null) {
-			if (passengerRepository.findByUserIdOrContactNumber(reqDto.getUserId(),
-					reqDto.getContactNumber()) == null) {
-				log.info(AppConstants.INVALID_MOBILENUMBER);
-				throw new ReservationException(AppConstants.INVALID_MOBILENUMBER, HttpStatus.BAD_REQUEST,
+		try {
+			log.info("addPassengerDetails request details" + reqDto);
+			if (reqDto.getUserId() != null) {
+				if (passengerRepository.findByUserIdOrContactNumber(reqDto.getUserId(),
+						reqDto.getContactNumber()) == null) {
+					log.info(AppConstants.INVALID_MOBILENUMBER);
+					throw new ReservationException(AppConstants.INVALID_MOBILENUMBER, HttpStatus.BAD_REQUEST,
+							Severity.INFO);
+				}
+			}
+			if (passengerRepository.findByContactNumber(reqDto.getContactNumber()) != null) {
+				log.info(AppConstants.USER_ALREADY_REGISTERED);
+				throw new ReservationException(AppConstants.USER_ALREADY_REGISTERED, HttpStatus.BAD_REQUEST,
 						Severity.INFO);
 			}
-		}
-		if (passengerRepository.findByContactNumber(reqDto.getContactNumber()) != null) {
-			log.info(AppConstants.USER_ALREADY_REGISTERED);
-			throw new ReservationException(AppConstants.USER_ALREADY_REGISTERED, HttpStatus.BAD_REQUEST, Severity.INFO);
+			passengerRepository.save(modelMapper.map(reqDto, Passenger.class));
+			return reqDto;
+		} catch (Exception e) {
+			throw new ReservationException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR, Severity.INFO);
 		}
 
-		passengerRepository.save(modelMapper.map(reqDto, Passenger.class));
-		return reqDto;
 	}
 
 	@Override

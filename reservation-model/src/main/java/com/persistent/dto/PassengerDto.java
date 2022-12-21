@@ -2,7 +2,9 @@ package com.persistent.dto;
 
 import java.util.Date;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern.Flag;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +19,7 @@ public class PassengerDto {
 	private String name;
 	@NotNull(message = "Contact Number can not be null")
 	private String contactNumber;
+	@Email(message = "The email address is invalid.", flags = { Flag.CASE_INSENSITIVE })
 	private String emailId;
 	@NotNull(message = "Gender can not be null")
 	private String gender;
