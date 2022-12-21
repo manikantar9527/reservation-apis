@@ -22,8 +22,6 @@ public class BookTicketDto {
 	private Passenger passenger;
 	@NotNull(message = "TrainId can not be null")
 	private Long trainId;
-	private Long cardNumber;
-	private String cardType;
 
 	private Double ticketCost;
 	private String startingLocation;
